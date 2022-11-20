@@ -1,6 +1,10 @@
 import { createReducer } from "@reduxjs/toolkit";
 import { MainReducerType } from "../../models/main/mainTypes";
-import { setUserLocationCoords } from "./actions/actions";
+import {
+  clearStore,
+  setUserLocationCoords,
+  toggleErrorHandler,
+} from "./actions/actions";
 
 const initialState: MainReducerType = {
   userGeolocation: {
@@ -8,20 +12,41 @@ const initialState: MainReducerType = {
     latitude: 0,
   },
   defaultState: {
-    center: [55.684758, 37.738521],
-    zoom: 10,
+    center: [],
+    zoom: 17,
+    controls: ["zoomControl", "fullscreenControl"],
+  },
+  additional: {
+    message: "",
+    isGeoAllowed: true,
   },
 };
 
 export const mainReducer = createReducer(initialState, (builder) => {
-  builder.addCase(setUserLocationCoords, (state, { payload }) => {
-    return {
-      ...state,
-      userGeolocation: payload,
-      defaultState: {
-        ...state.defaultState,
-        center: [payload.latitude, payload.longitude],
-      },
-    };
-  });
+  builder
+    .addCase(setUserLocationCoords, (state, { payload }) => {
+      return {
+        ...state,
+        userGeolocation: payload,
+        defaultState: {
+          ...state.defaultState,
+          center: [payload.latitude, payload.longitude],
+        },
+      };
+    })
+    .addCase(toggleErrorHandler, (state, { payload }) => {
+      return {
+        ...state,
+        additional: {
+          ...state.additional,
+          message: payload.message,
+          isGeoAllowed: payload.isGeoAllowed,
+        },
+      };
+    })
+    .addCase(clearStore, () => {
+      return {
+        ...initialState,
+      };
+    });
 });

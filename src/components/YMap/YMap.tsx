@@ -2,7 +2,13 @@ import React, { useCallback, useEffect, useRef } from "react";
 import { YMaps, Map, Placemark } from "@pbe/react-yandex-maps";
 import { useSelector, useDispatch } from "react-redux";
 import { mainStateSelector } from "../../selectors";
-import { setUserLocationCoords } from "../../store/mainReducer/actions/actions";
+import {
+  clearStore,
+  setUserLocationCoords,
+  toggleErrorHandler,
+} from "../../store/mainReducer/actions/actions";
+import { Typography } from "@mui/material";
+import { Loading } from "../Loading";
 
 interface IProps {}
 export const YMap: React.FC<IProps> = (props) => {
@@ -21,25 +27,38 @@ export const YMap: React.FC<IProps> = (props) => {
           );
         },
         function(error) {
-          console.error("Error Code = " + error.code + " - " + error.message);
+          dispatch(
+            toggleErrorHandler({
+              message:
+                "Не удалось загрузить карту. Проверьте настройки интернет соединения и геолокации",
+              isGeoAllowed: false,
+            })
+          );
         }
       );
     }
-  }, [mainState.userGeolocation]);
+
+    return () => {
+      dispatch(clearStore());
+    };
+  }, [dispatch]);
 
   return (
-    <YMaps>
-      <Map defaultState={mainState.defaultState} width='100vw' height='100vh'>
-        <Placemark
-          modules={["geoObject.addon.balloon"]}
-          defaultGeometry={[55.75, 37.57]}
-          properties={{
-            balloonContentBody:
-              "This is balloon loaded by the Yandex.Maps API module system",
-          }}
-          geometry={mainState.defaultState.center}
-        />
-      </Map>
+    <YMaps query={{ lang: "ru_RU" }}>
+      {mainState.defaultState.center.length !== 0 ? (
+        <Map
+          defaultState={mainState.defaultState}
+          modules={["control.ZoomControl", "control.FullscreenControl"]}
+          style={{ width: "calc(100vw - 64px)", height: "calc(100vh - 64px)" }}>
+          <Placemark
+            defaultGeometry={mainState.defaultState.center}
+            geometry={mainState.defaultState.center}
+            options={{ preset: "islands#redCircleDotIcon" }}
+          />
+        </Map>
+      ) : (
+        <Loading />
+      )}
     </YMaps>
   );
 };

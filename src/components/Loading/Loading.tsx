@@ -1,28 +1,33 @@
 import { Box, Typography } from "@mui/material";
 import React from "react";
+import { ThreeCircles } from "react-loader-spinner";
 import { useSelector } from "react-redux";
-import { HalfMalf } from "react-spinner-animated";
-import "react-spinner-animated/dist/index.css";
+import { useDefaultStyles } from "../../models/main/styles";
 import { mainStateSelector } from "../../selectors";
 
 export const Loading: React.FC = () => {
   const mainState = useSelector(mainStateSelector);
+  const classes = useDefaultStyles();
 
   return (
     <>
       {mainState.additional.isGeoAllowed ? (
-        <HalfMalf width={"200px"} height={"200px"} center={true} />
+        <ThreeCircles
+          height='200'
+          width='200'
+          color='#dedede'
+          wrapperClass={classes.centeredObject}
+          visible={true}
+          ariaLabel='three-circles-rotating'
+          outerCircleColor=''
+          innerCircleColor=''
+          middleCircleColor=''
+        />
       ) : (
         <Typography
           variant='h4'
           component='div'
-          style={{
-            display: "flex",
-            width: "calc(100vw - 64px)",
-            height: "calc(100vh - 64px)",
-            alignItems: "center",
-            textAlign: "center",
-          }}>
+          className={classes.centeredObject}>
           {mainState.additional.message}
         </Typography>
       )}

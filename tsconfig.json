@@ -1,20 +1,23 @@
 {
   "compilerOptions": {
-    "target": "es5",
-    "lib": ["dom", "dom.iterable", "esnext"],
-    "allowJs": true,
+    "baseUrl": "src",
+    "paths": {
+			"$*": ["*"]
+		},
+    "target": "ES6",
+    "module": "ES2020",
+		"lib": ["dom", "dom.iterable", "ES6"],
     "skipLibCheck": true,
     "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "strict": false,
+    "experimentalDecorators": true,
+    "preserveConstEnums": true,
+    "strict": true,
     "forceConsistentCasingInFileNames": true,
-    "noFallthroughCasesInSwitch": true,
-    "module": "esnext",
     "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
+		"importHelpers": true,
     "noEmit": true,
-    "jsx": "preserve"
+    "jsx": "react-jsx",
   },
-  "include": ["src"]
+  "include": ["src"],
+  "exclude": ["node_modules", "**/__tests__/**"]
 }

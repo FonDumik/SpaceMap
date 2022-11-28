@@ -16,12 +16,22 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
 import MapIcon from "@mui/icons-material/Map";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import SettingsIcon from "@mui/icons-material/Settings";
 import InfoIcon from "@mui/icons-material/Info";
-import Router from "../../Router";
-import { Link, NavLink } from "react-router-dom";
+import { Routes } from "$Routes";
+import { Link, NavLink, useLocation, useRouteMatch } from "react-router-dom";
+import {
+  setUserLocationCoords,
+  getLocationWithCoords,
+  toggleErrorHandler,
+} from "$store/mainReducer/actions/actions";
+import { useDispatch } from "react-redux";
+import { useEffect, useState } from "react";
+import { navigationConfig } from "$models/main/navigationConfig";
+import { useStyles } from "./styles";
 
 const drawerWidth = 240;
 
@@ -97,7 +107,10 @@ const Drawer = styled(MuiDrawer, {
 
 export const AppNavigation = () => {
   const theme = useTheme();
-  const [open, setOpen] = React.useState(false);
+  const classes = useStyles();
+  const dispatch = useDispatch();
+  const [open, setOpen] = useState(false);
+  const location = useLocation();
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -106,6 +119,31 @@ export const AppNavigation = () => {
   const handleDrawerClose = () => {
     setOpen(false);
   };
+
+  useEffect(() => {
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        function (position) {
+          dispatch(
+            setUserLocationCoords({
+              longitude: position.coords.longitude,
+              latitude: position.coords.latitude,
+            })
+          );
+          dispatch(getLocationWithCoords());
+        },
+        function (error) {
+          dispatch(
+            toggleErrorHandler({
+              message:
+                "Не удалось загрузить карту. Проверьте настройки интернет соединения и геолокации",
+              isGeoAllowed: false,
+            })
+          );
+        }
+      );
+    }
+  });
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -143,9 +181,9 @@ export const AppNavigation = () => {
         </DrawerHeader>
         <Divider />
         <List>
-          {["Главная", "Профиль", "Настройки", "О проекте"].map(
-            (text, index) => (
-              <ListItem key={text} disablePadding sx={{ display: "block" }}>
+          {navigationConfig.map((el, index) => (
+            <ListItem key={index} disablePadding sx={{ display: "block" }}>
+              <Link to={el.path} className={classes.itemLink}>
                 <ListItemButton
                   sx={{
                     minHeight: 48,
@@ -158,38 +196,52 @@ export const AppNavigation = () => {
                       mr: open ? 3 : "auto",
                       justifyContent: "center",
                     }}>
-                    {index === 0 && (
-                      <Link to={"/"}>
-                        <MapIcon color='action' />
-                      </Link>
-                    )}
-                    {index === 1 && (
-                      <Link to={"/profile"}>
-                        <AccountBoxIcon color='action' />
-                      </Link>
-                    )}
-                    {index === 2 && (
-                      <Link to={"/settings"}>
-                        <SettingsIcon color='action' />
-                      </Link>
-                    )}
-                    {index === 3 && (
-                      <Link to={"/about"}>
-                        <InfoIcon color='action' />
-                      </Link>
-                    )}
+                    {index === 0 && <MapIcon color='action' />}
+                    {index === 1 && <AccountBoxIcon color='action' />}
+                    {index === 2 && <SettingsIcon color='action' />}
+                    {index === 3 && <InfoIcon color='action' />}
                   </ListItemIcon>
-                  <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
+                  <ListItemText
+                    primary={el.title}
+                    sx={{ opacity: open ? 1 : 0 }}
+                    className={classes.itemLinkText}
+                  />
                 </ListItemButton>
-              </ListItem>
-            )
-          )}
+              </Link>
+            </ListItem>
+          ))}
         </List>
         <Divider />
+        {location.pathname === "/" && (
+          <List>
+            <ListItem disablePadding sx={{ display: "block" }}>
+              <ListItemButton
+                sx={{
+                  minHeight: 48,
+                  justifyContent: open ? "initial" : "center",
+                  px: 2.5,
+                }}>
+                <ListItemIcon
+                  sx={{
+                    minWidth: 0,
+                    mr: open ? 3 : "auto",
+                    justifyContent: "center",
+                  }}>
+                  <AddCircleIcon />
+                </ListItemIcon>
+                <ListItemText
+                  primary='Создать метку'
+                  sx={{ opacity: open ? 1 : 0 }}
+                  className={classes.itemLinkText}
+                />
+              </ListItemButton>
+            </ListItem>
+          </List>
+        )}
       </Drawer>
       <Box component='main' sx={{ flexGrow: 1, p: 3 }} style={{ padding: 0 }}>
         <DrawerHeader />
-        <Router />
+        <Routes />
       </Box>
     </Box>
   );

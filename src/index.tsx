@@ -1,12 +1,6 @@
-import React from "react";
-import ReactDOM from "react-dom";
-import App from "./App";
-import "./index.css";
-import { BrowserRouter } from "react-router-dom";
+/* eslint-disable spaced-comment */
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+//@ts-ignore
+import bootstrap from './bootstrap';
 
-ReactDOM.render(
-  <BrowserRouter>
-    <App />
-  </BrowserRouter>,
-  document.getElementById("root")
-);
+bootstrap(() => {});

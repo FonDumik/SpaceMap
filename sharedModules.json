@@ -1,0 +1,10 @@
+{
+	"react": "*",
+	"react-dom": "*",
+	"react-router-dom": "*",
+	"@material-ui/core": "*",
+	"@material-ui/icons": "*",
+	"@material-ui/styles": "*",
+	"@material-ui/lab": "*",
+	"@material-ui/pickers": "*"
+}

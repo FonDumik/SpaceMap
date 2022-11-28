@@ -1,0 +1,83 @@
+{
+  "extends": ["airbnb-typescript", "airbnb-typescript-prettier"],
+  "plugins": ["@typescript-eslint", "simple-import-sort", "import"],
+  "rules": {
+    "sort-imports": "off",
+		"padding-line-between-statements": [
+			"error",
+			{ "blankLine": "always", "prev": "*", "next": "return" }
+		],
+    "import/order": "off",
+		"consistent-return": 0,
+		"@typescript-eslint/explicit-module-boundary-types": "off",
+		"@typescript-eslint/no-explicit-any": ["error", { "ignoreRestArgs": false }],
+		"no-console": ["error"],
+		"max-lines": ["warn", 300],
+		"id-length": ["warn", { "min": 2, "exceptions": ["_"], "properties": "never" }],
+		"max-depth": ["warn", 2],
+
+    "react/jsx-uses-react": 2,
+		"react-hooks/exhaustive-deps": 1,
+		"react/react-in-jsx-scope": "off",
+
+    "import/prefer-default-export": "off",
+    "import/no-extraneous-dependencies": 1,
+
+    "react/destructuring-assignment": 0,
+    "react/prop-types": "off",
+    "react/require-default-props": "off",
+    "react/jsx-props-no-spreading": "off",
+    "react/no-this-in-sfc": "off",
+    "linebreak-style": 0,
+    "no-unused-vars": "warn",
+    "no-unused-expressions": "off",
+
+    "prettier/prettier": [
+      "error",
+      {
+        "endOfLine": "auto"
+      }
+    ]
+  },
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "project": "./tsconfig.json"
+  },
+  "settings": {
+		"import/parsers": {
+			"@typescript-eslint/parser": [".ts", ".tsx"]
+		},
+		"import/resolver": {
+			"typescript": {
+				"alwaysTryTypes": true,
+				"project": "./tsconfig.json"
+			}
+		}
+	},
+  // Продвинутая сортировка по модулям и в алфавитном порядке.
+	"overrides": [
+		{
+			"files": ["*.ts*"],
+			"rules": {
+				"simple-import-sort/imports": [
+					"error",
+					{
+						"groups": [
+							["^react", "^@?\\w", "^(@|@company|@ui|components|utils|config|vendored-lib)(/.*|$)"],
+							["^@material-ui/.+", "^@pcapcc360/.+"],
+							[
+								"^\\$+",
+								"^\\.\\.(?!/?$)",
+								"^\\.\\./?$",
+								"^\\./(?=.*/)(?!/?$)",
+								"^\\.(?!/?$)",
+								"^\\./?$",
+								"^.+\\.s?css$"
+							]
+						]
+					}
+				]
+			}
+		}
+	]
+}

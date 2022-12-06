@@ -16,6 +16,7 @@ export const YMap: React.FC<IProps> = () => {
   const dispatch = useDispatch();
   const mainState = useSelector(mainStateSelector);
   const classes = useDefaultStyles();
+
   const [aItem, setAitem] = React.useState([
     {
       id: "1",
@@ -55,36 +56,33 @@ export const YMap: React.FC<IProps> = () => {
     }),
   };
   return (
-    <YMaps query={{ lang: "ru_RU" }}>
-      {mainState.defaultState.center.length !== 0 ? (
-        <Map
-          defaultState={mainState.defaultState}
-          modules={["control.ZoomControl", "control.FullscreenControl"]}
-          className={classes.defaultSize}>
-          <Placemark
-            defaultGeometry={mainState.defaultState.center}
-            geometry={mainState.defaultState.center}
-            options={{ preset: "islands#redCircleDotIcon" }}
-          />
-          <ObjectManager
-            objects={{
-              openBalloonOnClick: true,
-            }}
-            clusters={{}}
-            options={{
-              clusterize: true,
-              gridSize: 32,
-            }}
-            defaultFeatures={collection}
-            modules={[
-              "objectManager.addon.objectsBalloon",
-              "objectManager.addon.clustersBalloon",
-            ]}
-          />
-        </Map>
-      ) : (
-        <Loading />
-      )}
+    <YMaps
+      query={{ lang: "ru_RU", apikey: process.env.APP_REACT_YMAPS_API_KEY }}>
+      <Map
+        defaultState={mainState.defaultState}
+        modules={["control.ZoomControl", "control.FullscreenControl"]}
+        className={classes.defaultSize}>
+        <Placemark
+          defaultGeometry={mainState.defaultState.center}
+          geometry={mainState.defaultState.center}
+          options={{ preset: "islands#redCircleDotIcon" }}
+        />
+        <ObjectManager
+          objects={{
+            openBalloonOnClick: true,
+          }}
+          clusters={{}}
+          options={{
+            clusterize: true,
+            gridSize: 32,
+          }}
+          defaultFeatures={collection}
+          modules={[
+            "objectManager.addon.objectsBalloon",
+            "objectManager.addon.clustersBalloon",
+          ]}
+        />
+      </Map>
     </YMaps>
   );
 };

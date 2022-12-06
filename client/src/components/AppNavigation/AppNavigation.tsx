@@ -108,7 +108,6 @@ const Drawer = styled(MuiDrawer, {
 export const AppNavigation = () => {
   const theme = useTheme();
   const classes = useStyles();
-  const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
   const location = useLocation();
 
@@ -119,31 +118,6 @@ export const AppNavigation = () => {
   const handleDrawerClose = () => {
     setOpen(false);
   };
-
-  useEffect(() => {
-    if ("geolocation" in navigator) {
-      navigator.geolocation.getCurrentPosition(
-        function (position) {
-          dispatch(
-            setUserLocationCoords({
-              longitude: position.coords.longitude,
-              latitude: position.coords.latitude,
-            })
-          );
-          dispatch(getLocationWithCoords());
-        },
-        function (error) {
-          dispatch(
-            toggleErrorHandler({
-              message:
-                "Не удалось загрузить карту. Проверьте настройки интернет соединения и геолокации",
-              isGeoAllowed: false,
-            })
-          );
-        }
-      );
-    }
-  });
 
   return (
     <Box sx={{ display: "flex" }}>

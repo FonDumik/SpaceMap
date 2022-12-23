@@ -7,4 +7,7 @@ export const useStyles = makeStyles(() => ({
   itemLinkText: {
     color: "#000000",
   },
+  appBar: {
+    backgroundColor: "#f1f1f1 !important",
+  },
 }));
